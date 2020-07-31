@@ -1,0 +1,8 @@
+{
+    "complierOption":{
+        "outDir": "./dist",
+        "watch": true,
+        "target": "es6",
+    },
+    "include":["./src/**/*"]
+}
