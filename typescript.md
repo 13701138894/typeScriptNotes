@@ -517,3 +517,240 @@ tom.id = 8888;
 // index.ts(13,5): error TS2540: Cannot assign to 'id' because it is a constant or a read-only property.
 ```
 
+## 6、数组的类型
+
+> **同一类型数据的集合**
+
+### **类型 + 方括号 表示法**
+
+```ts
+// 类型 + 方括号 string[]
+let arr: number[] = [1,2,3,4,5];
+// 不允许出现其他类型
+let arr: number[] = [1,2,3,'4',5];
+// Argument of type '"8"' is not assignable to parameter of type 'number'.
+```
+
+```ts
+// 数组的一些方法的参数也会根据数组在定义时约定的类型进行限制
+let arr： number[] = [1,2,3,4];
+arr.push(5);
+arr.push('6'); // 报错
+// Argument of type '"8"' is not assignable to parameter of type 'number'.
+```
+
+### 数组泛型 表示法
+
+> 可以使用数组泛型（Array Generic） `Array<elemType>` 来表示数组
+
+```ts
+let arr: Array<number> = [1,2,4,5];
+let arr: Array<string> = ['a','b'];
+```
+
+### 用接口表示数组
+
+```ts
+interface Arr {
+    [index: number]: number
+}
+let arr: Arr = [1,2,3,4,5];
+//
+interface Arr1 {
+    [index: number]: string
+}
+let str: Arr1 = ['a','b']
+```
+
+### 类数组
+
+类数组（Array-like Object）不是数组类型，比如 `arguments`
+
+```ts
+function sum() {
+    let args: number[] = arguments;
+}
+// Type 'IArguments' is missing the following properties from type 'number[]': pop, push, concat, join, and 24 more.
+```
+
+`arguments` 实际上是一个类数组，不能用普通的数组的方式来描述，而应该用接口
+
+```ts
+function sum() {
+    let args: {
+        [index: number]: number;
+        length: number;
+        callee: Function;
+    } = arguments;
+}
+//除了约束当索引的类型是数字时，值的类型必须是数字之外，也约束了它还有 length 和 callee 两个属性。
+```
+
+```ts
+// 事实上常用的类数组都有自己的接口定义，如 IArguments, NodeList, HTMLCollection 等
+function sum () {
+	let args: IArguments = arguments;
+}
+// 其中 IArguments 是 TypeScript 中定义好了的类型,相当于
+interface IArguments {
+    [index: number]: any;
+    length: number;
+    callee: Function;
+}
+
+```
+
+### any 在数组中的应用
+
+用 `any` 表示数组中允许出现任意类型
+
+```ts
+let arr: any[] = ['a','b',1,3,4,true,{a:1,b:2}];
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 5、进阶
+
+
+
+## 3、元组
+
+不同类型数据的集合
+
+数组合并了相同类型的对象，而元组（Tuple）合并了不同类型的对象。
+
+元组起源于函数编程语言（如 F#），这些语言中会频繁使用元组。
+
+```ts
+let arr: [numbre,string] = [1,'a'];
+// 当赋值或访问一个已知索引的元素时，会得到正确的类型
+let tom : [string,number];
+tom[0] = 'Tom';
+tim[1] = 25;
+
+tom[0].slice(1);
+tom[1].toFixed(2);
+```
+
+```ts
+// 可以只赋值其中一项
+let tom: [string, number];
+tom[0] = 'Tom';
+```
+
+当 **直接** 对元组类型的变量进行初始化或者赋值的时候，需要提供所有元组类型中指定的项
+
+```ts
+let tom: [string, number];
+tom = ['Tom',18];
+
+let Tom1: [string, number];
+Tom1 = ['tom']; // 报错
+// Property '1' is missing in type '[string]' but required in type '[string, number]'.
+```
+
+**越界的元素**
+
+```ts
+// 当添加越界的元素时，它的类型会被限制为元组中每个类型的联合类型
+let tom: [string, number];
+tom = ['Tom',18];
+tom.push('male');
+tom.push(true); // 报错
+// Argument of type 'true' is not assignable to parameter of type 'string | number'.
+```
+
+定义元组未直接赋值，需要关闭严格检查模式  strictNullChecks：true
+
+```json
+{
+    "complierOptions" : {
+        'target': 'es6',
+        'watch': true,
+        outDir: './dist',
+        // strictNullChecks: true
+    }
+    include: ['./src/**/*']
+}
+```
+
+
+
+## 4、枚举
+
+> 枚举可以是数字类型枚举，也可以是字符串类型枚举；
+>
+> 数字类型枚举第一个数字不赋值默认为0；
+>
+> 后边的数字不赋值默认在前一个数字上加一
+
+```ts
+enmu RTCTag {
+    RONGCLUDE = 'rongrtc',
+    SCREENSHARE = 'screenshare'
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
